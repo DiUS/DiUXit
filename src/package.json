@@ -1,0 +1,28 @@
+{
+  "name": "diuxit",
+  "version": "1.0.0",
+  "description": "Digital version of the game Dixit",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./server/index"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DiUS/DiUXit.git"
+  },
+  "keywords": [
+    "hack-day",
+    "dixit"
+  ],
+  "author": "Michael Grassi, Mario Martinez, Andrew Oh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DiUS/DiUXit/issues"
+  },
+  "homepage": "https://github.com/DiUS/DiUXit#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "winston": "^2.2.0"
+  }
+}
