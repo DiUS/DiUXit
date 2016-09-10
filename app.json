@@ -1,0 +1,24 @@
+{
+  "name": "DiUXit",
+  "description": "Digital version of Dixit",
+  "keywords": [
+    "Dius",
+    "Hackday",
+    "Dixit"
+  ],
+  "website": "https://small-sharp-tool.com/",
+  "repository": "https://github.com/DiUS/DiUXit",
+  "env": {
+    "SECRET_TOKEN": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "Performance-M"
+    }
+  },
+  "image": "heroku/nodejs"
+}
