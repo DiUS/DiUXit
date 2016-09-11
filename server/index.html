@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DiUXit Spike</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    body {
+      margin-top: 30px;
+    }
+
+    #messageArea {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="userFormArea" class="row">
+    <div class="col-md-12">
+      <form action="" id="userForm">
+        <div class="form-group">
+          <label for="">Enter Username</label>
+          <input type="text" id="username" class="form-control"></input>
+          <br/>
+          <input type="submit" class="btn btn-primary" value="Login" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="container">
+    <div id="messageArea" class="row">
+      <div class="col-md-4">
+        <div class="well">
+          <h3>Online users</h3>
+          <ul class="list-group" id="users"></ul>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="chat" id="chat"></div>
+        <form action="" id="messageForm">
+          <div class="form-group">
+            <label for="">Enter Message</label>
+            <textarea name="" id="message" cols="30" rows="10" class="form-control"></textarea>
+            <br/>
+            <input type="submit" class="btn btn-primary" value="Send Message" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    $(() => {
+      const socket = io.connect();
+      const $messageForm = $('#messageForm');
+      const $message = $('#message');
+      const $chat = $('#chat');
+      const $messageArea = $('#messageArea');
+      const $userFormArea = $('#userFormArea');
+      const $userForm = $('#userForm');
+      const $users = $('#users');
+      const $username = $('#username');
+
+      $messageForm.submit(e => {
+        e.preventDefault();
+        socket.emit('send message', $message.val());
+        $message.val('');
+      });
+
+      socket.on('new message', data => {
+        $chat.append(`<div class="well"><strong>${data.user}</strong>: ${data.msg}</div>`);
+      });
+
+      $userForm.submit(e => {
+        e.preventDefault();
+        socket.emit('new user', $username.val(), data => {
+          if (data) {
+            $userFormArea.hide();
+            $messageArea.show();
+          }
+        });
+        $username.val('');
+      });
+
+      socket.on('get users', users => {
+        const html =
+          users.map(user => `<li class="list-group-item">${user}</li>`)
+            .join('')
+          $users.html(html);
+      })
+    });
+  </script>
+</body>
+</html>
