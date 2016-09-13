@@ -16,6 +16,10 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/community', (req, res) => {
+  res.sendFile(__dirname + '/community.html');
+});
+
 io.sockets.on('connection', socket => {
   connections.push(socket);
   console.log(`Connected: ${connections.length} sockets connected`);
