@@ -8,9 +8,13 @@ const io = require('socket.io').listen(server);
 const users = [];
 const connections = [];
 
-console.log('Server running');
+const serverPort = process.env.PORT || 3000;
 
-server.listen(process.env.PORT || 3000);
+console.log(`Starting server on port ${serverPort}`);
+
+server.listen(serverPort);
+
+app.use('/static', express.static(__dirname + '/static'));
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');

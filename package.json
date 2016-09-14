@@ -2,8 +2,8 @@
   "name": "diuxit",
   "version": "1.0.0",
   "description": "Digital version of the game Dixit",
-  "author": "Michael Grassi, Mario Martinez, Andrew Oh",
-  "main": "./server/index.js",
+  "author": "Michael Grassi, Mario Martinez, Jessica May, Andrew Oh",
+  "main": "./src/index.js",
   "engines": {
     "node": "6.5.0"
   },
