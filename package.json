@@ -1,5 +1,5 @@
 {
-  "name": "diuxit",
+  "name": "fresistance",
   "version": "1.0.0",
   "description": "Digital version of the game Dixit",
   "author": "Michael Grassi, Mario Martinez, Jessica May, Andrew Oh",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DiUS/DiUXit.git"
+    "url": "git+https://github.com/DiUS/Fresistance.git"
   },
   "keywords": [
     "hack-day",
@@ -17,9 +17,9 @@
   ],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/DiUS/DiUXit/issues"
+    "url": "https://github.com/DiUS/Fresistance/issues"
   },
-  "homepage": "https://github.com/DiUS/DiUXit#readme",
+  "homepage": "https://github.com/DiUS/Fresistance#readme",
   "scripts": {
     "start": "nodemon"
   },
