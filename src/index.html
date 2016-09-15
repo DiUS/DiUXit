@@ -107,10 +107,6 @@
         $username.val('');
       });
 
-      $(document).on('click', '.pick-card', event => {
-        console.log('Card id', $(event.target).data('card-id'));
-      });
-
       function displayCards() {
         const cardImages = [0,1,2,3,4,5,6];
 
@@ -123,6 +119,11 @@
           );
         });
       }
+
+      $(document).on('click', '.pick-card', event => {
+        console.log('Card id', $(event.target).data('card-id'));
+        $cards.hide();
+      });
 
       socket.on('get users', users => {
         const html =
