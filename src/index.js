@@ -15,6 +15,7 @@ const communityConnections = [];
 
 let storyTeller = null;
 let storyTellersCard = null;
+let cardsSubmittedForTheRound = [];
 let playerCardsReceived = 0;
 
 const CARDS_PER_PLAYER = 3;
@@ -104,21 +105,31 @@ io.sockets.on('connection', socket => {
 
   // Receiving story teller's card
   socket.on('STORY_TELLERS_CARD', (cardId) => {
-    console.log(cardId);
     playerCardsReceived++;
     storyTellersCard = cardId;
-    sendToCommunity(eventTypes.PLAYER_CARD, cardId);
+    cardsSubmittedForTheRound.push(cardId);
+    sendToCommunity(eventTypes.PLAYER_CARD, '');
+    console.log(`story teller's card is: ${cardId}`);
+    progressToVotingIfAllCardsReceived();
   });
 
   // Receiving non story teller's card
   socket.on('PLAYER_CARD', (cardId) => {
     playerCardsReceived++;
-    sendToCommunity(eventTypes.PLAYER_CARD, cardId);
+    cardsSubmittedForTheRound.push(cardId);
+    sendToCommunity(eventTypes.PLAYER_CARD, '');
+    progressToVotingIfAllCardsReceived();
+  });
+
+  function progressToVotingIfAllCardsReceived() {
 
     if(playerCardsReceived >= users.length) {
-      sendToCommunity(eventTypes.REVEAL_CARDS, '');
+      rngService.randomizeArray(cardsSubmittedForTheRound);
+      sendToCommunity(eventTypes.REVEAL_CARDS, cardsSubmittedForTheRound);
       io.sockets.emit(eventTypes.ENABLE_VOTING, '');
+
+      console.log(`cardsSubmittedForTheRound ${JSON.stringify(cardsSubmittedForTheRound)}`);
     }
-  });
+  }
 
 });
