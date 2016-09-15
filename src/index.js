@@ -6,6 +6,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io').listen(server);
 const eventTypes = require('./messageTypes');
 const cardService = require('./services/cardService');
+const rngService = require('./services/rngService');
 
 
 const users = [];
@@ -65,7 +66,7 @@ io.sockets.on('connection', socket => {
   // Start game
   socket.on('start game', () => {
     const numberOfUsers = users.length;
-    console.log('Game starting...', numberOfUsers);
+    console.log('Game starting with', numberOfUsers, 'players');
     if (numberOfUsers >= MIN_USERS && numberOfUsers <= MAX_USERS) {
       for(const conn of connections) {
         if(conn.username) {
@@ -74,7 +75,10 @@ io.sockets.on('connection', socket => {
         }
       }
 
-      //io.sockets.emit('new message', {msg: [1,2,3,4,5,7], user: 'Narrator'});
+      // Broadcast the story teller
+      const storyTeller = users[rngService.getRandomInt(0, users.length)];
+      io.sockets.emit(eventTypes.STORY_TELLER_IS, storyTeller);
+      console.log(`storyTeller is : ${storyTeller}`);
     }
   });
 });

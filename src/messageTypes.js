@@ -2,6 +2,7 @@
 
 // Events to players
 const DISTRIBUTING_CARDS = 'DISTRIBUTING_CARDS';
+const STORY_TELLER_IS = 'STORY_TELLER_IS';
 
 
 // Events to community board
