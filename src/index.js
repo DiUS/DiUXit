@@ -84,6 +84,7 @@ io.sockets.on('connection', socket => {
 
   // Start game
   socket.on('start game', () => {
+    cardService.resetDeck();
     const numberOfUsers = users.length;
     console.log('Game starting with', numberOfUsers, 'players');
     if (numberOfUsers >= MIN_USERS && numberOfUsers <= MAX_USERS) {

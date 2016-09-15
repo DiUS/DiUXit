@@ -5,8 +5,12 @@ const rngService = require('./rngService');
 const MAX_NUMBER_OF_CARDS = 16;
 const cardsAvailableInDeck = [];
 
-for(let i = 0; i < MAX_NUMBER_OF_CARDS; i++) {
-  cardsAvailableInDeck.push(i);
+resetDeck();
+
+function resetDeck() {
+  for(let i = 0; i < MAX_NUMBER_OF_CARDS; i++) {
+    cardsAvailableInDeck.push(i);
+  }
 }
 
 function retrieveRandomCard() {
@@ -25,6 +29,6 @@ function retrieveCards(numberOfCards) {
 }
 
 module.exports = {
-  retrieveRandomCard,
+  resetDeck,
   retrieveCards
 };
