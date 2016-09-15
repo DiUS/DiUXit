@@ -4,36 +4,21 @@ const cardService = require('../src/services/cardService');
 
 describe('cardService', () => {
 
-  it('should return random cards without duplicates', () => {
-    const cardsPulled = [];
+  it.only('should retrieve random cards asked for', () => {
+    let cards = cardService.retrieveCards(3).sort();
+    console.log(cards);
 
-    cardsPulled.push(cardService.retrieveRandomCard());
-    cardsPulled.push(cardService.retrieveRandomCard());
-    cardsPulled.push(cardService.retrieveRandomCard());
-    cardsPulled.push(cardService.retrieveRandomCard());
-    cardsPulled.push(cardService.retrieveRandomCard());
-    cardsPulled.push(cardService.retrieveRandomCard());
-    cardsPulled.push(cardService.retrieveRandomCard());
-    cardsPulled.push(cardService.retrieveRandomCard());
-    cardsPulled.push(cardService.retrieveRandomCard());
-    cardsPulled.push(cardService.retrieveRandomCard());
-    cardsPulled.push(cardService.retrieveRandomCard());
-    cardsPulled.push(cardService.retrieveRandomCard());
-    cardsPulled.push(cardService.retrieveRandomCard());
-    cardsPulled.push(cardService.retrieveRandomCard());
-    cardsPulled.push(cardService.retrieveRandomCard());
-    cardsPulled.push(cardService.retrieveRandomCard());
+    cards = cardService.retrieveCards(3).sort();
+    console.log(cards);
+
+    cards = cardService.retrieveCards(3).sort();
+    console.log(cards);
+
+    cards = cardService.retrieveCards(3).sort();
+    console.log(cards);
+
+    cards = cardService.retrieveCards(3).sort();
+    console.log(cards);
   });
-
-  //it.only('should retrieve random cards asked for', () => {
-  //  let cards = cardService.retrieveCards(3);
-  //  console.log(cards);
-  //  cards = cardService.retrieveCards(3);
-  //  console.log(cards);
-  //  cards = cardService.retrieveCards(3);
-  //  console.log(cards);
-  //  cards = cardService.retrieveCards(3);
-  //  console.log(cards);
-  //});
 
 });

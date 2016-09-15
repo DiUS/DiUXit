@@ -3,11 +3,12 @@
 const rngService = require('./rngService');
 
 const MAX_NUMBER_OF_CARDS = 16;
-const cardsAvailableInDeck = [];
+let cardsAvailableInDeck = [];
 
 resetDeck();
 
 function resetDeck() {
+  cardsAvailableInDeck = [];
   for(let i = 0; i < MAX_NUMBER_OF_CARDS; i++) {
     cardsAvailableInDeck.push(i);
   }
