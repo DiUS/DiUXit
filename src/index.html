@@ -106,7 +106,7 @@
 
       socket.on('STORY_TELLER_IS', storyTeller => {
         currentStoryTeller = storyTeller;
-        $storyTeller.val(`Storyteller is ${storyTeller}`);
+        $storyTeller.text(`Storyteller is ${storyTeller}`);
       });
 
       $userForm.submit(e => {
