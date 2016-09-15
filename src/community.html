@@ -20,6 +20,11 @@
     }
     #playcard {
       max-height: 300px;
+      visibility: hidden;
+    }
+    #cardback {
+      max-height: 300px;
+      visibility: visible;
     }
 
   </style>
@@ -63,9 +68,24 @@
       const $users = $('#users');
       const $username = $('#username');
       const $startGame = $('#startGame');
+      const $playercard = $('#playcard');
+      const $cardback = $('#cardback');
 
-      socket.on('new cards played', data => {
-        $cardDisplay.append(`<img src="./static/${data.number}.jpg" alt="playcard" id="playcard" />`);// data.username data.cardId
+      // socket.on('STORY_TELLERS_CARD', data => {
+      //   $cardDisplay.append(`<img src="./static/${data}.jpg" alt="playcard" id="playcard" />`)
+      // });
+
+      socket.on('PLAYER_CARD', () => {
+        // $cardDisplay.append(`<img src="./static/${data}.jpg" alt="playcard" id="playcard" />`);
+        $cardDisplay.append(`<img src="./static/cardback.jpg" alt="playcard" id="cardback" />`);
+      });
+
+      socket.on('REVEAL_CARDS', cardIdList => {
+        cardIdList.forEach( cardID => {
+          $cardDisplay.append(`<img src="./static/${cardID}.jpg" alt="playcard" id="playcard" />`);
+        });
+        $playercard.css( "visibility", "visible" );
+        $cardback.css( "visibility", "hidden" );
       });
 
       socket.on('get users', users => {
@@ -75,7 +95,12 @@
           $users.html(html);
       });
 
-      $startGame.click(() => socket.emit('start game'));
+      $startGame.click(() => {
+        socket.emit('start game');
+        users.length
+      });
+
+
     });
   </script>
 </body>
