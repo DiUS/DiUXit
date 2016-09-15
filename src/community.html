@@ -43,10 +43,6 @@
           <div class="well">
             <h3>Gameboard</h3>
             <div class="cardDisplay" id="cardDisplay">
-              <img src="./static/0.jpg" alt="card" id="playcard"/>
-              <img src="./static/4.jpg" alt="card" id="playcard"/>
-              <img src="./static/3.jpg" alt="card" id="playcard"/>
-              <img src="./static/7.jpg" alt="card" id="playcard"/>
             </div>
           </div>
         </div>
@@ -97,10 +93,7 @@
 
       $startGame.click(() => {
         socket.emit('start game');
-        users.length
       });
-
-
     });
   </script>
 </body>
