@@ -26,7 +26,7 @@
         <div class="gameboard" id="gameboard">
           <div class="well">
             <h3>Gameboard</h3>
-            <div class="cardDisplay"></div>
+            <div class="cardDisplay" id="cardDisplay"></div>
           </div>
         </div>
       </div>
@@ -36,10 +36,13 @@
     </div>
   </div>
 
+  <img src="./static/0.jpg" alt="card" />
+
   <script type="text/javascript">
     $(() => {
       const socket = io.connect();
       const $gameboard = $('#gameboard');
+      const $cardDisplay = $('#cardDisplay');
       const $chat = $('#chat');
       const $messageArea = $('#messageArea');
       const $userForm = $('#userForm');
@@ -47,13 +50,9 @@
       const $username = $('#username');
       const $startGame = $('#startGame');
 
-      socket.on('new message', data => {
-        $gameboard.append(`<div class="well"><strong>${data.user}</strong>: ${data.msg}</div>`);
+      socket.on('new cards played', data => {
+        $cardDisplay.append(`<img src="./static/${data.number}.jpg" alt="playcard" />`);
       });
-
-      // socket.on('get user images', data => {
-      //   data.user
-      // });
 
       socket.on('get users', users => {
         const html =
