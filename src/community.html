@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Fresistance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TV view</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <script src="https://code.jquery.com/jquery-latest.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
@@ -13,17 +14,21 @@
   </style>
 </head>
 <body>
-  <h1>Community</h1>
   <div class="container">
     <div id="messageArea" class="row">
-      <div class="col-md-4">
+      <div class="col-lg-3">
         <div class="well">
           <h3>Online users</h3>
           <ul class="list-group" id="users"></ul>
         </div>
       </div>
-      <div class="col-md-8">
-        <div class="chat" id="chat"></div>
+      <div class="col-lg-9">
+        <div class="gameboard" id="gameboard">
+          <div class="well">
+            <h3>Gameboard</h3>
+            <div class="cardDisplay"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -31,25 +36,24 @@
   <script type="text/javascript">
     $(() => {
       const socket = io.connect();
-      const $messageForm = $('#messageForm');
-      const $message = $('#message');
-      const $chat = $('#chat');
+      const $gameboard = $('#gameboard');
       const $messageArea = $('#messageArea');
-      const $userFormArea = $('#userFormArea');
-      const $userForm = $('#userForm');
       const $users = $('#users');
-      const $username = $('#username');
 
       socket.on('new message', data => {
-        $chat.append(`<div class="well"><strong>${data.user}</strong>: ${data.msg}</div>`);
+        $gameboard.append(`<div class="well"><strong>${data.user}</strong>: ${data.msg}</div>`);
       });
+
+      // socket.on('get user images', data => {
+      //   data.user
+      // });
 
       socket.on('get users', users => {
         const html =
           users.map(user => `<li class="list-group-item">${user}</li>`)
             .join('')
           $users.html(html);
-      })
+      });
     });
   </script>
 </body>
