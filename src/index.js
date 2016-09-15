@@ -4,15 +4,19 @@ const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io').listen(server);
+const eventTypes = require('./messageTypes');
+const cardService = require('./services/cardService');
+
 
 const users = [];
 const connections = [];
-const cardsUsed = [];
+
+const CARDS_PER_PLAYER = 3;
 
 
 let state = 'waiting';
-const minUsers = 5;
-const maxUsers = 10;
+const MIN_USERS = 2;
+const MAX_USERS = 10;
 
 const serverPort = process.env.PORT || 3000;
 
@@ -61,26 +65,17 @@ io.sockets.on('connection', socket => {
   // Start game
   socket.on('start game', () => {
     const numberOfUsers = users.length;
-    console.log('game started', numberOfUsers);
-    //if (numberOfUsers >= minUsers && numberOfUsers <= maxUsers) {
-      // start game
-      io.sockets.emit('new message', {msg: [1,2,3,4,5,7], user: 'Narrator'});
-    //}
+    console.log('Game starting...', numberOfUsers);
+    if (numberOfUsers >= MIN_USERS && numberOfUsers <= MAX_USERS) {
+      for(const conn of connections) {
+        if(conn.username) {
+          const playersCards = cardService.retrieveCards(CARDS_PER_PLAYER);
+          conn.emit(eventTypes.DISTRIBUTING_CARDS, {user: 'server', msg: playersCards});
+        }
+      }
 
-    //distribute cards
-    //
-
+      //io.sockets.emit('new message', {msg: [1,2,3,4,5,7], user: 'Narrator'});
+    }
   });
 });
 
-
-
-function retrieveRandomCard() {
-
-  const cardDistribution = [];
-
-
-
-
-  return cardDistribution;
-}

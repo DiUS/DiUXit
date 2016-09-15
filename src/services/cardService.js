@@ -15,12 +15,21 @@ function getRandomInt(minInt, maxInt) {
 
 
 function retrieveRandomCard() {
-  const rng = getRandomInt(0, cardsAvailableInDeck.length);
+  const randomNumber = getRandomInt(0, cardsAvailableInDeck.length);
+  const cardRetrieved = cardsAvailableInDeck.splice(randomNumber, 1)[0];
+  return cardRetrieved;
+}
 
+function retrieveCards(numberOfCards) {
+  const cards = [];
+  for(let i = 0; i < numberOfCards; i++) {
+    cards.push(retrieveRandomCard());
+  }
 
-  return rng;
+  return cards;
 }
 
 module.exports = {
-  retrieveRandomCard
+  retrieveRandomCard,
+  retrieveCards
 };
