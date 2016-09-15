@@ -9,14 +9,18 @@
   <script src="/socket.io/socket.io.js"></script>
   <style>
     body {
-      margin-top: 30px;
+      margin: 30px;
     }
     .cardDisplay {
-      max-height: 80vh;
+      min-height: 80vh;
       display: flex;
+      flex-direction: row;
       flex-wrap: wrap;
       justify-content: space-around;
       align-items: center;
+    }
+    .displayEach {
+      flex: 0 1;
     }
     .playcard {
       max-height: 300px;
@@ -25,11 +29,11 @@
       max-height: 300px;
       visibility: visible;
     }
-
   </style>
 </head>
+
 <body>
-  <div class="container">
+  <div class="container-fluid">
     <div id="messageArea" class="row">
       <div class="col-lg-3">
         <div class="well">
@@ -42,6 +46,7 @@
           <div class="well">
             <h3>Gameboard</h3>
             <div class="cardDisplay" id="cardDisplay">
+              <div class="displayEach"></div>
             </div>
           </div>
         </div>
@@ -64,14 +69,19 @@
       const $username = $('#username');
       const $startGame = $('#startGame');
       const $playercard = $('.playcard');
+      const $displayEach = $('.displayEach');
 
       socket.on('PLAYER_CARD', () => {
         $cardDisplay.append(`<img src="./static/cardback.jpg" alt="playcard" class="cardback" />`);
       });
 
       socket.on('REVEAL_CARDS', cardIdList => {
+        let counter = 0;
+        const lettersList = {'1': 'A', '2': 'B', '3': 'C', '4': 'D', '5': 'E', '6': 'F', '7': 'G', '8': 'H', '9': 'I', '10': 'J'};
         cardIdList.forEach( cardID => {
-          $cardDisplay.append(`<img src="./static/${cardID}.jpg" alt="playcard" class="playcard" />`);
+          counter++;
+          $cardDisplay.append(`<div class="displayEach"><h2>${lettersList[counter.toString()]}</h2></div>`);
+          $cardDisplay.append(`<div class="displayEach"><img src="./static/${cardID}.jpg" alt="playcard" class="playcard" /></div>`);
         });
         $('.cardback').hide();
       });
