@@ -123,7 +123,7 @@
 
       socket.on('STORY_TELLER_IS', storyTeller => {
         currentStoryTeller = storyTeller;
-        $storyTeller.text(`Storyteller is ${storyTeller}`);
+        $storyTeller.text(`Storyteller is the player named ${storyTeller}`);
       });
 
       $userForm.submit(e => {
