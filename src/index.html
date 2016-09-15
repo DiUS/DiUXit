@@ -33,6 +33,7 @@
 </head>
 <body>
   <h1>DiUXit</h1>
+  <h3 id="storyTeller"></h3>
   <div id="userFormArea" class="row">
     <div class="col-md-12">
       <form action="" id="userForm">
@@ -46,9 +47,12 @@
     </div>
   </div>
   <div class="container" id="gameArea">
-    <div class="row">
+    <div class="row" id="cardsRow">
       <h2>Your Cards</h2>
       <div class="cards" id="cards"></div>
+    </div>
+    <div class="row" id="waitingForOthers">
+      <h2>Waiting for others to play their card</h2>
     </div>
     <div id="messageArea" class="row">
       <div class="col-md-4">
@@ -74,6 +78,7 @@
   <script type="text/javascript">
     $(() => {
       const socket = io.connect();
+      let username = '';
       const $messageForm = $('#messageForm');
       const $message = $('#message');
       const $chat = $('#chat');
@@ -84,6 +89,10 @@
       const $username = $('#username');
       const $gameArea = $('#gameArea');
       const $cards = $('#cards');
+      const $cardsRow = $('#cardsRow');
+      const $storyTeller = $('#storyTeller');
+      const $waitingForOthers = $('#waitingForOthers');
+      let currentStoryTeller = '';
 
       $messageForm.submit(e => {
         e.preventDefault();
@@ -95,21 +104,24 @@
         $chat.append(`<div class="well"><strong>${data.user}</strong>: ${data.msg}</div>`);
       });
 
+      socket.on('STORY_TELLER_IS', storyTeller => {
+        currentStoryTeller = storyTeller;
+        $storyTeller.val(`Storyteller is ${storyTeller}`);
+      });
+
       $userForm.submit(e => {
         e.preventDefault();
         socket.emit('new user', $username.val(), data => {
           if (data) {
             $userFormArea.hide();
             $gameArea.show();
-            displayCards();
+            username = $username.val();
           }
         });
         $username.val('');
       });
 
-      function displayCards() {
-        const cardImages = [0,1,2,3,4,5,6];
-
+      function displayCards(cardImages) {
         cardImages.forEach(cardImageId => {
           $cards.append(
             `<div>
@@ -120,9 +132,19 @@
         });
       }
 
+      socket.on('DISTRIBUTING_CARDS', cards => {
+        displayCards(cards.msg);
+      });
+
       $(document).on('click', '.pick-card', event => {
-        console.log('Card id', $(event.target).data('card-id'));
-        $cards.hide();
+        const cardId = $(event.target).data('card-id');
+        if (username === currentStoryTeller) {
+          socket.emit('STORY_TELLERS_CARD', cardId);
+        } else {
+          socket.emit('PLAYER_CARD', cardId);
+        }
+        $cardsRow.hide();
+        $waitingForOthers.show();
       });
 
       socket.on('get users', users => {
@@ -130,7 +152,7 @@
           users.map(user => `<li class="list-group-item">${user}</li>`)
             .join('')
           $users.html(html);
-      })
+      });
     });
   </script>
 </body>
