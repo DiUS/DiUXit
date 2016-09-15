@@ -12,12 +12,23 @@
       margin-top: 30px;
     }
 
-    #messageArea {
+    #gameArea {
       display: none;
+    }
+
+    .cards {
+      text-align: center;
+    }
+
+    .card {
+      width: 90vw;
+      border-radius: 20px;
+      margin: 10px 0;
     }
   </style>
 </head>
 <body>
+  <h1>DiUXit</h1>
   <div id="userFormArea" class="row">
     <div class="col-md-12">
       <form action="" id="userForm">
@@ -30,7 +41,11 @@
       </form>
     </div>
   </div>
-  <div class="container">
+  <div class="container" id="gameArea">
+    <div class="row">
+      <h2>Your Cards</h2>
+      <div class="cards" id="cards"></div>
+    </div>
     <div id="messageArea" class="row">
       <div class="col-md-4">
         <div class="well">
@@ -63,6 +78,8 @@
       const $userForm = $('#userForm');
       const $users = $('#users');
       const $username = $('#username');
+      const $gameArea = $('#gameArea');
+      const $cards = $('#cards');
 
       $messageForm.submit(e => {
         e.preventDefault();
@@ -79,11 +96,32 @@
         socket.emit('new user', $username.val(), data => {
           if (data) {
             $userFormArea.hide();
-            $messageArea.show();
+            $gameArea.show();
+            displayCards();
           }
         });
         $username.val('');
       });
+
+      function displayCards() {
+        const cardImages = [
+          'http://imgur.com/BXU1Frx.jpg',
+          'http://imgur.com/Bm9wNar.jpg',
+          'http://imgur.com/BEnig4b.jpg',
+          'http://imgur.com/a7DtkIF.jpg',
+          'http://imgur.com/uy9cqR5.jpg',
+          'http://imgur.com/VWNPviS.jpg',
+          'http://imgur.com/Ll4GZFt.jpg',
+          'http://imgur.com/xU4479U.jpg',
+          'http://imgur.com/3T8eqZM.jpg',
+          'http://imgur.com/uVDP4Zq.jpg',
+          'http://imgur.com/kHsVc7g.jpg',
+        ];
+
+        cardImages.forEach(cardImageSrc => {
+          $cards.append(`<img class="card" src="${cardImageSrc}">`)
+        });
+      }
 
       socket.on('get users', users => {
         const html =
