@@ -23,7 +23,11 @@
     .card {
       width: 90vw;
       border-radius: 20px;
-      margin: 10px 0;
+      margin: 10px 0 5px 0;
+    }
+
+    .pick-card {
+      margin-bottom: 20px;
     }
   </style>
 </head>
@@ -103,23 +107,20 @@
         $username.val('');
       });
 
-      function displayCards() {
-        const cardImages = [
-          'http://imgur.com/BXU1Frx.jpg',
-          'http://imgur.com/Bm9wNar.jpg',
-          'http://imgur.com/BEnig4b.jpg',
-          'http://imgur.com/a7DtkIF.jpg',
-          'http://imgur.com/uy9cqR5.jpg',
-          'http://imgur.com/VWNPviS.jpg',
-          'http://imgur.com/Ll4GZFt.jpg',
-          'http://imgur.com/xU4479U.jpg',
-          'http://imgur.com/3T8eqZM.jpg',
-          'http://imgur.com/uVDP4Zq.jpg',
-          'http://imgur.com/kHsVc7g.jpg',
-        ];
+      $(document).on('click', '.pick-card', event => {
+        console.log('Card id', $(event.target).data('card-id'));
+      });
 
-        cardImages.forEach(cardImageSrc => {
-          $cards.append(`<img class="card" src="${cardImageSrc}">`)
+      function displayCards() {
+        const cardImages = [0,1,2,3,4,5,6];
+
+        cardImages.forEach(cardImageId => {
+          $cards.append(
+            `<div>
+              <img class="card" src="/static/${cardImageId}.jpg">
+              <button data-card-id="${cardImageId}" class="btn btn-primary pick-card">Pick Card</button>
+            </div>`
+          );
         });
       }
 
