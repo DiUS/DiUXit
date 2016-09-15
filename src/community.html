@@ -18,11 +18,10 @@
       justify-content: space-around;
       align-items: center;
     }
-    #playcard {
+    .playcard {
       max-height: 300px;
-      visibility: hidden;
     }
-    #cardback {
+    .cardback {
       max-height: 300px;
       visibility: visible;
     }
@@ -43,10 +42,6 @@
           <div class="well">
             <h3>Gameboard</h3>
             <div class="cardDisplay" id="cardDisplay">
-              <img src="./static/0.jpg" alt="card" id="playcard"/>
-              <img src="./static/4.jpg" alt="card" id="playcard"/>
-              <img src="./static/3.jpg" alt="card" id="playcard"/>
-              <img src="./static/7.jpg" alt="card" id="playcard"/>
             </div>
           </div>
         </div>
@@ -68,24 +63,17 @@
       const $users = $('#users');
       const $username = $('#username');
       const $startGame = $('#startGame');
-      const $playercard = $('#playcard');
-      const $cardback = $('#cardback');
-
-      // socket.on('STORY_TELLERS_CARD', data => {
-      //   $cardDisplay.append(`<img src="./static/${data}.jpg" alt="playcard" id="playcard" />`)
-      // });
+      const $playercard = $('.playcard');
 
       socket.on('PLAYER_CARD', () => {
-        // $cardDisplay.append(`<img src="./static/${data}.jpg" alt="playcard" id="playcard" />`);
-        $cardDisplay.append(`<img src="./static/cardback.jpg" alt="playcard" id="cardback" />`);
+        $cardDisplay.append(`<img src="./static/cardback.jpg" alt="playcard" class="cardback" />`);
       });
 
       socket.on('REVEAL_CARDS', cardIdList => {
         cardIdList.forEach( cardID => {
-          $cardDisplay.append(`<img src="./static/${cardID}.jpg" alt="playcard" id="playcard" />`);
+          $cardDisplay.append(`<img src="./static/${cardID}.jpg" alt="playcard" class="playcard" />`);
         });
-        $playercard.css( "visibility", "visible" );
-        $cardback.css( "visibility", "hidden" );
+        $('.cardback').hide();
       });
 
       socket.on('get users', users => {
@@ -97,7 +85,6 @@
 
       $startGame.click(() => {
         socket.emit('start game');
-        users.length
       });
 
 
