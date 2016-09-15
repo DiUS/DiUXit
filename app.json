@@ -1,13 +1,13 @@
 {
-  "name": "Fresistance",
-  "description": "Digital version of Fresistance",
+  "name": "DiUXit",
+  "description": "Digital version of DiUXit",
   "keywords": [
     "Dius",
     "Hackday",
     "Dixit"
   ],
   "website": "https://small-sharp-tool.com/",
-  "repository": "https://github.com/DiUS/Fresistance",
+  "repository": "https://github.com/DiUS/DiUXit",
   "env": {
     "SECRET_TOKEN": {
       "description": "A secret key for verifying the integrity of signed cookies.",
