@@ -64,7 +64,7 @@
       <div class="cards" id="cards"></div>
     </div>
     <div class="row" id="waitingForOthers">
-      <h2>Waiting for others to play their card</h2>
+      <h2>Waiting for others players...</h2>
       <img class="loading" src="assets/loading.gif" alt="">
     </div>
     <div class="row" id="voting">
@@ -162,16 +162,14 @@
         displayCards(cards.msg);
       });
 
-      socket.on('VOTING_ENABLED', () => {
+      socket.on('ENABLE_VOTING', () => {
         $waitingForOthers.hide(200);
         $voting.show();
         $votingForm.submit(e => {
           e.preventDefault();
-          socket.emit('PLAYER_VOTE_IS', $voteValue.val(), data => {
-            if (data) {
-              $voting.hide();
-              $cardsRow.show();
-            }
+          socket.emit('PLAYERS_VOTE', $voteValue.val().toLowerCase(), () => {
+            $voting.hide();
+            $waitingForOthers.show();
           });
         });
       });
