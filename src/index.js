@@ -4,15 +4,25 @@ const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io').listen(server);
+const eventTypes = require('./messageTypes');
+const cardService = require('./services/cardService');
+const rngService = require('./services/rngService');
+
 
 const users = [];
 const connections = [];
-const cardsUsed = [];
+const communityConnections = [];
+
+let storyTeller = null;
+let storyTellersCard = null;
+let playerCardsReceived = 0;
+
+const CARDS_PER_PLAYER = 3;
 
 
 let state = 'waiting';
-const minUsers = 5;
-const maxUsers = 10;
+const MIN_USERS = 2;
+const MAX_USERS = 10;
 
 const serverPort = process.env.PORT || 3000;
 
@@ -29,6 +39,20 @@ app.get('/', (req, res) => {
 app.get('/community', (req, res) => {
   res.sendFile(__dirname + '/community.html');
 });
+
+function getUserConnections() {
+  return connections.filter(conn => conn.username);
+}
+
+function getCommunityConnections() {
+  return connections.filter(conn => !conn.username);
+}
+
+function sendToCommunity(eventType, payload) {
+  for(const conn of getCommunityConnections()) {
+    conn.emit(eventType, payload);
+  }
+}
 
 io.sockets.on('connection', socket => {
   connections.push(socket);
@@ -61,26 +85,38 @@ io.sockets.on('connection', socket => {
   // Start game
   socket.on('start game', () => {
     const numberOfUsers = users.length;
-    console.log('game started', numberOfUsers);
-    //if (numberOfUsers >= minUsers && numberOfUsers <= maxUsers) {
-      // start game
-      io.sockets.emit('new message', {msg: [1,2,3,4,5,7], user: 'Narrator'});
-    //}
+    console.log('Game starting with', numberOfUsers, 'players');
+    if (numberOfUsers >= MIN_USERS && numberOfUsers <= MAX_USERS) {
 
-    //distribute cards
-    //
+      for(const conn of getUserConnections()) {
+        const playersCards = cardService.retrieveCards(CARDS_PER_PLAYER);
+        conn.emit(eventTypes.DISTRIBUTING_CARDS, {user: 'server', msg: playersCards});
+      }
 
+      // Broadcast the story teller
+      storyTeller = users[rngService.getRandomInt(0, users.length)];
+      io.sockets.emit(eventTypes.STORY_TELLER_IS, storyTeller);
+      console.log(`storyTeller is : ${storyTeller}`);
+    }
   });
+
+  // Receiving story teller's card
+  socket.on('STORY_TELLERS_CARD', (cardId) => {
+    playerCardsReceived++;
+    storyTellersCard = cardId;
+    sendToCommunity(eventTypes.STORY_TELLERS_CARD, cardId);
+  });
+
+  // Receiving non story teller's card
+  socket.on('PLAYER_CARD', () => {
+    playerCardsReceived++;
+    sendToCommunity(eventTypes.PLAYER_CARD, cardId);
+
+    if(playerCardsReceived >= users.length) {
+      sendToCommunity(eventTypes.REVEAL_CARDS, '');
+      io.sockets.emit(eventTypes.ENABLE_VOTING, '');
+    }
+  });
+
 });
 
-
-
-function retrieveRandomCard() {
-
-  const cardDistribution = [];
-
-
-
-
-  return cardDistribution;
-}

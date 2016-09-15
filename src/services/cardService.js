@@ -1,5 +1,7 @@
 'use strict';
 
+const rngService = require('./rngService');
+
 const MAX_NUMBER_OF_CARDS = 16;
 const cardsAvailableInDeck = [];
 
@@ -7,20 +9,22 @@ for(let i = 0; i < MAX_NUMBER_OF_CARDS; i++) {
   cardsAvailableInDeck.push(i);
 }
 
-function getRandomInt(minInt, maxInt) {
-  const min = Math.ceil(minInt);
-  const max = Math.floor(maxInt);
-  return Math.floor(Math.random() * (max - min)) + min;
+function retrieveRandomCard() {
+  const randomNumber = rngService.getRandomInt(0, cardsAvailableInDeck.length);
+  const cardRetrieved = cardsAvailableInDeck.splice(randomNumber, 1)[0];
+  return cardRetrieved;
 }
 
+function retrieveCards(numberOfCards) {
+  const cards = [];
+  for(let i = 0; i < numberOfCards; i++) {
+    cards.push(retrieveRandomCard());
+  }
 
-function retrieveRandomCard() {
-  const rng = getRandomInt(0, cardsAvailableInDeck.length);
-
-
-  return rng;
+  return cards;
 }
 
 module.exports = {
-  retrieveRandomCard
+  retrieveRandomCard,
+  retrieveCards
 };

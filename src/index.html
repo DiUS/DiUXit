@@ -6,17 +6,34 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <script src="https://code.jquery.com/jquery-latest.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <style>
     body {
       margin-top: 30px;
     }
 
-    #messageArea {
+    #gameArea {
       display: none;
+    }
+
+    .cards {
+      text-align: center;
+    }
+
+    .card {
+      width: 90vw;
+      border-radius: 20px;
+      margin: 10px 0 5px 0;
+    }
+
+    .pick-card {
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
+  <h1>DiUXit</h1>
+  <h3 id="storyTeller"></h3>
   <div id="userFormArea" class="row">
     <div class="col-md-12">
       <form action="" id="userForm">
@@ -29,7 +46,14 @@
       </form>
     </div>
   </div>
-  <div class="container">
+  <div class="container" id="gameArea">
+    <div class="row" id="cardsRow">
+      <h2>Your Cards</h2>
+      <div class="cards" id="cards"></div>
+    </div>
+    <div class="row" id="waitingForOthers">
+      <h2>Waiting for others to play their card</h2>
+    </div>
     <div id="messageArea" class="row">
       <div class="col-md-4">
         <div class="well">
@@ -54,6 +78,7 @@
   <script type="text/javascript">
     $(() => {
       const socket = io.connect();
+      let username = '';
       const $messageForm = $('#messageForm');
       const $message = $('#message');
       const $chat = $('#chat');
@@ -62,6 +87,12 @@
       const $userForm = $('#userForm');
       const $users = $('#users');
       const $username = $('#username');
+      const $gameArea = $('#gameArea');
+      const $cards = $('#cards');
+      const $cardsRow = $('#cardsRow');
+      const $storyTeller = $('#storyTeller');
+      const $waitingForOthers = $('#waitingForOthers');
+      let currentStoryTeller = '';
 
       $messageForm.submit(e => {
         e.preventDefault();
@@ -73,15 +104,47 @@
         $chat.append(`<div class="well"><strong>${data.user}</strong>: ${data.msg}</div>`);
       });
 
+      socket.on('STORY_TELLER_IS', storyTeller => {
+        currentStoryTeller = storyTeller;
+        $storyTeller.val(`Storyteller is ${storyTeller}`);
+      });
+
       $userForm.submit(e => {
         e.preventDefault();
         socket.emit('new user', $username.val(), data => {
           if (data) {
             $userFormArea.hide();
-            $messageArea.show();
+            $gameArea.show();
+            username = $username.val();
           }
         });
         $username.val('');
+      });
+
+      function displayCards(cardImages) {
+        cardImages.forEach(cardImageId => {
+          $cards.append(
+            `<div>
+              <img class="card" src="/static/${cardImageId}.jpg">
+              <button data-card-id="${cardImageId}" class="btn btn-primary pick-card">Pick Card</button>
+            </div>`
+          );
+        });
+      }
+
+      socket.on('DISTRIBUTING_CARDS', cards => {
+        displayCards(cards.msg);
+      });
+
+      $(document).on('click', '.pick-card', event => {
+        const cardId = $(event.target).data('card-id');
+        if (username === currentStoryTeller) {
+          socket.emit('STORY_TELLERS_CARD', cardId);
+        } else {
+          socket.emit('PLAYER_CARD', cardId);
+        }
+        $cardsRow.hide();
+        $waitingForOthers.show();
       });
 
       socket.on('get users', users => {
@@ -89,7 +152,7 @@
           users.map(user => `<li class="list-group-item">${user}</li>`)
             .join('')
           $users.html(html);
-      })
+      });
     });
   </script>
 </body>
