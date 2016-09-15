@@ -7,6 +7,9 @@ const io = require('socket.io').listen(server);
 
 const users = [];
 const connections = [];
+const cardsUsed = [];
+
+
 let state = 'waiting';
 const minUsers = 5;
 const maxUsers = 10;
@@ -59,9 +62,25 @@ io.sockets.on('connection', socket => {
   socket.on('start game', () => {
     const numberOfUsers = users.length;
     console.log('game started', numberOfUsers);
-    if (numberOfUsers >= minUsers && numberOfUsers <= maxUsers) {
+    //if (numberOfUsers >= minUsers && numberOfUsers <= maxUsers) {
       // start game
-      io.sockets.emit('new message', {msg: 'Game has started', user: 'Narrator'});
-    }
+      io.sockets.emit('new message', {msg: [1,2,3,4,5,7], user: 'Narrator'});
+    //}
+
+    //distribute cards
+    //
+
   });
 });
+
+
+
+function retrieveRandomCard() {
+
+  const cardDistribution = [];
+
+
+
+
+  return cardDistribution;
+}

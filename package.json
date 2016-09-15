@@ -21,7 +21,8 @@
   },
   "homepage": "https://github.com/DiUS/DiUXit#readme",
   "scripts": {
-    "start": "nodemon"
+    "start": "nodemon",
+    "test": "mocha --recursive test/"
   },
   "dependencies": {
     "express": "^4.14.0",
