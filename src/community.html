@@ -11,6 +11,17 @@
     body {
       margin-top: 30px;
     }
+    .cardDisplay {
+      max-height: 80vh;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      align-items: center;
+    }
+    #playcard {
+      max-height: 300px;
+    }
+
   </style>
 </head>
 <body>
@@ -26,7 +37,12 @@
         <div class="gameboard" id="gameboard">
           <div class="well">
             <h3>Gameboard</h3>
-            <div class="cardDisplay" id="cardDisplay"></div>
+            <div class="cardDisplay" id="cardDisplay">
+              <img src="./static/0.jpg" alt="card" id="playcard"/>
+              <img src="./static/4.jpg" alt="card" id="playcard"/>
+              <img src="./static/3.jpg" alt="card" id="playcard"/>
+              <img src="./static/7.jpg" alt="card" id="playcard"/>
+            </div>
           </div>
         </div>
       </div>
@@ -35,8 +51,6 @@
       <button id="startGame" class="btn btn-primary">Start Game</button>
     </div>
   </div>
-
-  <img src="./static/0.jpg" alt="card" />
 
   <script type="text/javascript">
     $(() => {
@@ -51,7 +65,7 @@
       const $startGame = $('#startGame');
 
       socket.on('new cards played', data => {
-        $cardDisplay.append(`<img src="./static/${data.number}.jpg" alt="playcard" />`);
+        $cardDisplay.append(`<img src="./static/${data.number}.jpg" alt="playcard" id="playcard" />`);// data.username data.cardId
       });
 
       socket.on('get users', users => {

@@ -106,11 +106,11 @@ io.sockets.on('connection', socket => {
     console.log(cardId);
     playerCardsReceived++;
     storyTellersCard = cardId;
-    sendToCommunity(eventTypes.STORY_TELLERS_CARD, cardId);
+    sendToCommunity(eventTypes.PLAYER_CARD, cardId);
   });
 
   // Receiving non story teller's card
-  socket.on('PLAYER_CARD', () => {
+  socket.on('PLAYER_CARD', (cardId) => {
     playerCardsReceived++;
     sendToCommunity(eventTypes.PLAYER_CARD, cardId);
 
