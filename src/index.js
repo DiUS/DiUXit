@@ -18,7 +18,7 @@ let storyTellersCard = null;
 let cardsSubmittedForTheRound = [];
 let playerCardsReceived = 0;
 
-const CARDS_PER_PLAYER = 3;
+const CARDS_PER_PLAYER = 7;
 
 
 let state = 'waiting';

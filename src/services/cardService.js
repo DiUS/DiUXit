@@ -2,7 +2,7 @@
 
 const rngService = require('./rngService');
 
-const MAX_NUMBER_OF_CARDS = 16;
+const MAX_NUMBER_OF_CARDS = 46;
 let cardsAvailableInDeck = [];
 
 resetDeck();
