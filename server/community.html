@@ -26,19 +26,20 @@
         <div class="chat" id="chat"></div>
       </div>
     </div>
+    <div class="row">
+      <button id="startGame" class="btn btn-primary">Start Game</button>
+    </div>
   </div>
 
   <script type="text/javascript">
     $(() => {
       const socket = io.connect();
-      const $messageForm = $('#messageForm');
-      const $message = $('#message');
       const $chat = $('#chat');
       const $messageArea = $('#messageArea');
-      const $userFormArea = $('#userFormArea');
       const $userForm = $('#userForm');
       const $users = $('#users');
       const $username = $('#username');
+      const $startGame = $('#startGame');
 
       socket.on('new message', data => {
         $chat.append(`<div class="well"><strong>${data.user}</strong>: ${data.msg}</div>`);
@@ -49,7 +50,9 @@
           users.map(user => `<li class="list-group-item">${user}</li>`)
             .join('')
           $users.html(html);
-      })
+      });
+
+      $startGame.click(() => socket.emit('start game'));
     });
   </script>
 </body>

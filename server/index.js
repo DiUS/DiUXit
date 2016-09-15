@@ -7,6 +7,9 @@ const io = require('socket.io').listen(server);
 
 const users = [];
 const connections = [];
+let state = 'waiting';
+const minUsers = 5;
+const maxUsers = 10;
 
 console.log('Server running');
 
@@ -47,4 +50,14 @@ io.sockets.on('connection', socket => {
   function updateUsernames() {
     io.sockets.emit('get users', users);
   }
+
+  // Start game
+  socket.on('start game', () => {
+    const numberOfUsers = users.length;
+    console.log('game started', numberOfUsers);
+    if (numberOfUsers >= minUsers && numberOfUsers <= maxUsers) {
+      // start game
+      io.sockets.emit('new message', {msg: 'Game has started', user: 'Narrator'});
+    }
+  });
 });
