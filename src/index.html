@@ -16,6 +16,10 @@
       display: none;
     }
 
+    #waitingForOthers {
+      display: none;
+    }
+
     .cards {
       text-align: center;
     }
@@ -53,6 +57,7 @@
     </div>
     <div class="row" id="waitingForOthers">
       <h2>Waiting for others to play their card</h2>
+      <img src="assets/loading.gif" alt="">
     </div>
     <div id="messageArea" class="row">
       <div class="col-md-4">
@@ -115,9 +120,9 @@
           if (data) {
             $userFormArea.hide();
             $gameArea.show();
-            username = $username.val();
           }
         });
+        username = $username.val();
         $username.val('');
       });
 

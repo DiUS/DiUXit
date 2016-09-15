@@ -31,6 +31,7 @@ console.log(`Starting server on port ${serverPort}`);
 server.listen(serverPort);
 
 app.use('/static', express.static(__dirname + '/static'));
+app.use('/assets', express.static(__dirname + '/assets'));
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
@@ -103,6 +104,7 @@ io.sockets.on('connection', socket => {
 
   // Receiving story teller's card
   socket.on('STORY_TELLERS_CARD', (cardId) => {
+    console.log(cardId);
     playerCardsReceived++;
     storyTellersCard = cardId;
     sendToCommunity(eventTypes.PLAYER_CARD, cardId);
@@ -120,4 +122,3 @@ io.sockets.on('connection', socket => {
   });
 
 });
-
