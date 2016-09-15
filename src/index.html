@@ -20,6 +20,10 @@
       display: none;
     }
 
+    #voting {
+      display: none;
+    }
+
     .loading {
       width: 90vw;
     }
@@ -63,6 +67,16 @@
       <h2>Waiting for others to play their card</h2>
       <img class="loading" src="assets/loading.gif" alt="">
     </div>
+    <div class="row" id="voting">
+      <h2>Time to vote</h2>
+      <form action="" id="votingForm">
+        <div class="form-group">
+          <label for="usr">Which card do you think was the card that the storyteller selected?</label>
+          <input type="text" class="form-control" id="usr">
+        </div>
+        <input type="submit" class="btn btn-primary" value="Send Message" />
+      </form>
+    </div>
     <div id="messageArea" class="row">
       <div class="col-md-4">
         <div class="well">
@@ -75,7 +89,7 @@
         <form action="" id="messageForm">
           <div class="form-group">
             <label for="">Enter Message</label>
-            <textarea name="" id="message" cols="30" rows="10" class="form-control"></textarea>
+            <textarea name="" id="voteValue" cols="30" rows="10" class="form-control"></textarea>
             <br/>
             <input type="submit" class="btn btn-primary" value="Send Message" />
           </div>
@@ -101,6 +115,9 @@
       const $cardsRow = $('#cardsRow');
       const $storyTeller = $('#storyTeller');
       const $waitingForOthers = $('#waitingForOthers');
+      const $voting = $('#voting');
+      const $votingForm = $('#votingForm');
+      const $voteValue = $('#voteValue');
       let currentStoryTeller = '';
 
       $messageForm.submit(e => {
@@ -143,6 +160,20 @@
 
       socket.on('DISTRIBUTING_CARDS', cards => {
         displayCards(cards.msg);
+      });
+
+      socket.on('VOTING_ENABLED', () => {
+        $waitingForOthers.hide(200);
+        $voting.show();
+        $votingForm.submit(e => {
+          e.preventDefault();
+          socket.emit('PLAYER_VOTE_IS', $voteValue.val(), data => {
+            if (data) {
+              $voting.hide();
+              $cardsRow.show();
+            }
+          });
+        });
       });
 
       $(document).on('click', '.pick-card', event => {
