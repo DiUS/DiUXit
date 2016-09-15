@@ -17,6 +17,8 @@ let storyTeller = null;
 let storyTellersCard = null;
 let cardsSubmittedForTheRound = [];
 let playerCardsReceived = 0;
+let playersVotesReceived = 0;
+let playersVotes = [];
 
 const CARDS_PER_PLAYER = 7;
 
@@ -56,6 +58,17 @@ function sendToCommunity(eventType, payload) {
   }
 }
 
+function resetState() {
+  cardService.resetDeck();
+
+  storyTeller = null;
+  storyTellersCard = null;
+  cardsSubmittedForTheRound = [];
+  playerCardsReceived = 0;
+  playersVotesReceived = 0;
+  playersVotes = [];
+}
+
 io.sockets.on('connection', socket => {
   connections.push(socket);
   console.log(`Connected: ${connections.length} sockets connected`);
@@ -86,7 +99,7 @@ io.sockets.on('connection', socket => {
 
   // Start game
   socket.on('start game', () => {
-    cardService.resetDeck();
+    resetState();
     const numberOfUsers = users.length;
     console.log('Game starting with', numberOfUsers, 'players');
     if (numberOfUsers >= MIN_USERS && numberOfUsers <= MAX_USERS) {
@@ -107,7 +120,12 @@ io.sockets.on('connection', socket => {
   socket.on('STORY_TELLERS_CARD', (cardId) => {
     playerCardsReceived++;
     storyTellersCard = cardId;
-    cardsSubmittedForTheRound.push(cardId);
+    cardsSubmittedForTheRound.push({
+      username: socket.username,
+      cardId,
+      isStoryTeller: true,
+      votesReceived: []
+    });
     sendToCommunity(eventTypes.PLAYER_CARD, '');
     console.log(`story teller's card is: ${cardId}`);
     progressToVotingIfAllCardsReceived();
@@ -116,20 +134,70 @@ io.sockets.on('connection', socket => {
   // Receiving non story teller's card
   socket.on('PLAYER_CARD', (cardId) => {
     playerCardsReceived++;
-    cardsSubmittedForTheRound.push(cardId);
+    cardsSubmittedForTheRound.push({
+      username: socket.username,
+      cardId,
+      isStoryTeller: false,
+      votesReceived: []
+    });
     sendToCommunity(eventTypes.PLAYER_CARD, '');
     progressToVotingIfAllCardsReceived();
+  });
+
+  socket.on('PLAYERS_VOTE', playersVote => {
+    playersVotesReceived++;
+    const lowercasedVote = playersVote.toLowerCase();
+    const votedCard = cardsSubmittedForTheRound[(lowercasedVote.charCodeAt(0) - 97)];
+    votedCard.votesReceived.push(socket.username);
+
+    if (playersVotesReceived + 1 >= users.length) {
+      const votingResults = initializeVoteResults();
+
+      const storyTellersCard = cardsSubmittedForTheRound.filter(c => c.isStoryTeller);
+      const isAllOrNothing = (storyTellersCard.votesReceived.length == users.length - 1) || (storyTellersCard.votesReceived.length == 0);
+
+      // Find story teller's card
+      // If no one or everyone voted for it assign points
+      // If some but not all people voted for it assign points
+      // assign points for every card every other player voted for
+
+      for(let i = 0; i < cardsSubmittedForTheRound; i++ ) {
+        const cardInfo = cardsSubmittedForTheRound[i];
+
+        if (card.votesReceived.length > 0) {
+          const cardLetter = String.fromCharCode(97 + i);
+          votingResults[cardLetter]
+        }
+      }
+
+      io.sockets.emit('VOTING_RESULTS', votingResults);
+    }
   });
 
   function progressToVotingIfAllCardsReceived() {
 
     if(playerCardsReceived >= users.length) {
       rngService.randomizeArray(cardsSubmittedForTheRound);
-      sendToCommunity(eventTypes.REVEAL_CARDS, cardsSubmittedForTheRound);
+      const cardsOnlyArray = extractCardIdsOnly(cardsSubmittedForTheRound);
+      sendToCommunity(eventTypes.REVEAL_CARDS, cardsOnlyArray);
       io.sockets.emit(eventTypes.ENABLE_VOTING, '');
 
       console.log(`cardsSubmittedForTheRound ${JSON.stringify(cardsSubmittedForTheRound)}`);
     }
+  }
+
+  function extractCardIdsOnly(cardsForRound) {
+    return cardsForRound.map(obj => obj.cardId);
+  }
+
+  function initializeVoteResults() {
+    const results = {};
+
+    for(let i = 0; i < users.length; i++) {
+      results[String.fromCharCode(97 + i)] = [];
+    }
+
+    return results;
   }
 
 });
